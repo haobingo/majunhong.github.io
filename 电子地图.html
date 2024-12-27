@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Document</title>
+    <style>   
+        html,
+        body,    
+    #container {
+    width: 100%;
+    height: 100%;
+    }
+    .input-card{
+        position: fixed;
+        background-color: #aaa9b0;
+        overflow-y: auto;
+        width: 150px;
+        height: 150px;
+        top: 10px;
+        right: 10px;
+    }
+    .input-card .btn{
+    margin-right: 1.2rem;
+    width: 9rem;
+    }
+    .input-card .btn:last-child{
+    margin-right: 0;
+    }
+  </style>
+<script type="text/javascript">
+    window._AMapSecurityConfig = {
+      securityJsCode: "724e7a2436efd8705ef700ec2f44c7e4",
+    };
+  </script>
+  <script src="https://webapi.amap.com/loader.js"></script>
+<script src="https://webapi.amap.com/maps?v=2.0&key=9e79393c6a9ebf4024567e84733eac5d&plugin=AMap.Driving,AMap.Transfer,Amap.Walking,Amap.Riding,Amap.TruckDriving,Amap.DragRoute,AMap.MoveAnimation"></script>
+</head>
+<body>
+
+    <div id="container"></div>
+    <div class="input-card">
+    <button class="btn" onclick="startAnimation()">开始动画</button>
+    </div>
+    <script>
+
+      console.log(AMap);
+
+  </script>
+
+  <script>
+
+      // 定义常量存储图标路径和信息窗口样式
+
+      const ICON_PATHS = {
+
+        第一教学楼: '',
+            北图书馆: '',
+            第二教学楼: '',
+            第一食堂: '',
+            竹苑5栋: '',
+            第二食堂: '',
+            致知楼: '',
+            立德楼: '',
+            智华楼: '',
+            经管楼: '',
+            土木楼: '',
+            至信楼: '',
+            文法楼: '',
+            生物楼: '',
+            第二图书馆: '',
+            至诚楼: '',
+            园林楼: '',
+            林工楼: '',
+            林学楼: '',
+            信息楼: '',
+            体育馆: '',
+            茶苑餐厅: '',
+            第四食堂: '',
+            菜鸟驿站: '',
+            松苑: '',
+            橡苑: '',
+            篮球场: '',
+            足球场: '',
+            工学楼: ''
+
+      };
+
+      const INFO_WINDOW_STYLE = {
+
+          offset: new AMap.Pixel(0, -30),
+
+          minWidth: 200
+
+      };
+
+
+
+      // 创建地图实例
+
+      const map = new AMap.Map('container', {
+
+          center: [102.760536, 25.059855],
+
+          mapStyle: "amap://styles/default",
+
+          zoom: 16.5,
+
+          viewMode: '2D',
+
+          pitch: 45,
+
+      });
+
+      marker0 = new AMap.Marker({
+            map: map,
+            position: [102.75189538,25.05788384],
+            icon: "https://a.amap.com/jsapi_demos/static/demo-center-v2/car.png",
+            offset: new AMap.Pixel(-13, -26),
+            duration:10000,
+        });//图标
+
+        AMap.plugin(["AMap.Driving","AMap.DragRoute"], function () {
+        var driving = new AMap.Driving({
+          map:map,
+          policy:0, 
+        });
+        var path = [];
+        path.push([102.75189538,25.05788384]);
+        path.push([102.74827242,25.06073635]);
+        path.push([102.75536266,25.07122817]);
+        var route = new AMap.DragRoute(map, path, 0);//动态
+        route.search();
+        driving.search(path,function(status,result){
+            });
+        });//动态路线动画
+
+          function startAnimation(){
+            marker0.moveAlong(path,{duration:3000,})//速度
+          };
+ 
+
+      // 创建标记点函数
+
+      function createMarker(position, title, icon) {
+
+          const marker = new AMap.Marker({
+
+              position: position,
+
+              title: title,
+
+              icon: icon
+
+          });
+
+          // 创建一个自定义的文本标签
+
+          const label = new AMap.Text({
+
+              text: title,
+
+              position: marker.getPosition(),
+
+              offset: new AMap.Pixel(0, -20)
+
+          });
+
+          map.add(label);
+
+          return marker;
+
+      }
+
+
+
+      // 创建信息窗口函数
+
+      function createInfoWindow(content) {
+
+          return new AMap.InfoWindow({
+
+              content: content,
+
+             ...INFO_WINDOW_STYLE
+
+          });
+
+      }
+
+
+
+      // 创建图标函数
+
+      function createIcon(path, size) {
+
+          return new AMap.Icon({
+
+              size: size,
+
+              image: path,
+
+               imageSize: size
+
+          });
+
+      }
+
+
+
+      // 创建地点标记和信息窗口
+
+      function createLocationMarkerAndInfoWindow(locationName, position, description) {
+
+          const icon = createIcon(ICON_PATHS[locationName], new AMap.Size(30, 30));
+
+          const marker = createMarker(position, locationName, icon);
+
+          const infoWindow = createInfoWindow(description);
+
+          marker.on('click', function () {
+
+              infoWindow.open(map, marker.getPosition());
+
+          });
+
+          map.add(marker);
+
+          return marker;
+
+      }
+
+
+
+      // 创建标记和信息窗口
+
+      createLocationMarkerAndInfoWindow('第一教学楼', [102.758799, 25.060301], );
+
+      createLocationMarkerAndInfoWindow('北图书馆', [102.757977, 25.061454], );
+
+      createLocationMarkerAndInfoWindow('第二教学楼', [102.756879, 25.061547], );
+
+      createLocationMarkerAndInfoWindow('第一食堂', [102.759064, 25.061776],);
+
+      createLocationMarkerAndInfoWindow('第二食堂', [102.758103, 25.062613], );
+
+      createLocationMarkerAndInfoWindow('竹苑5栋', [102.755962, 25.061865], );
+
+      createLocationMarkerAndInfoWindow('立德楼', [102.754989, 25.058016], );
+
+      createLocationMarkerAndInfoWindow('智华楼', [102.755191, 25.057342], );
+
+      createLocationMarkerAndInfoWindow('致知楼', [102.753838, 25.057888],);
+
+      createLocationMarkerAndInfoWindow('经管楼', [102.754151, 25.056888], );
+
+      createLocationMarkerAndInfoWindow('土木楼', [102.754714, 25.056781], );
+
+      createLocationMarkerAndInfoWindow('至信楼', [102.755852, 25.057212], );
+
+      createLocationMarkerAndInfoWindow('文法楼', [102.755646, 25.056597], );
+
+      createLocationMarkerAndInfoWindow('生物楼', [102.757095, 25.056263], );
+
+      createLocationMarkerAndInfoWindow('第二图书馆', [102.757471, 25.056981], );
+
+      createLocationMarkerAndInfoWindow('至诚楼', [102.758808, 25.05716], );
+
+      createLocationMarkerAndInfoWindow('园林楼', [102.759904, 25.059178], );
+
+      createLocationMarkerAndInfoWindow('林工楼', [102.757803, 25.05923], );
+
+      createLocationMarkerAndInfoWindow('林学楼', [102.756939, 25.062424], );
+
+      createLocationMarkerAndInfoWindow('信息楼', [102.759788, 25.060382], );
+
+      createLocationMarkerAndInfoWindow('体育馆', [102.7621, 25.06151], );
+
+      createLocationMarkerAndInfoWindow('菜鸟驿站', [102.762959, 25.06031], );
+
+      createLocationMarkerAndInfoWindow('茶苑餐厅', [102.756554, 25.057892], );
+
+      createLocationMarkerAndInfoWindow('第四食堂', [102.761788, 25.058597], );
+
+      createLocationMarkerAndInfoWindow('松苑', [102.760712, 25.061466], );
+
+      createLocationMarkerAndInfoWindow('橡苑', [102.763257, 25.057519], );
+
+      createLocationMarkerAndInfoWindow('篮球场', [102.760575, 25.062488], );
+
+      createLocationMarkerAndInfoWindow('足球场', [102.761959, 25.062873], );
+
+      createLocationMarkerAndInfoWindow('工学楼', [102.762817, 25.062513], );
+
+
+
+      AMap.plugin(['AMap.ToolBar', 'AMap.Scale', 'AMap.Geolocation', 'AMap.ControlBar', 'AMap.HawkEye'], function () {
+
+          const toolbar = new AMap.ToolBar({
+
+              position: { left: '10px', top: '10px' }
+
+          });
+
+          const scale = new AMap.Scale({
+
+              position: { left: '10px', bottom: '50px' }
+
+          });
+
+          const hawkEye = new AMap.HawkEye({
+
+              position: { right: '10px', bottom: '10px' }
+
+          });
+
+          const geolocation = new AMap.Geolocation({
+
+              position: { left: '120px', bottom: '50px' }
+
+          });
+
+          const controlBar = new AMap.ControlBar({
+
+              position: { right: '150px', top: '10px' }
+
+          });
+
+          map.addControl(toolbar);
+
+          map.addControl(scale);
+
+          map.addControl(geolocation);
+
+          map.addControl(controlBar);
+
+          map.addControl(hawkEye);
+
+      });
+      var path = [
+            [102.76260495,25.06472534],[102.76364565,25.06352024], [102.76424646,25.06194582],[102.76402116, 25.05914679],[102.76531935, 25.05694057],[102.76304483, 25.05559933],[102.76211143, 25.05533691],
+        [102.75968671, 25.05581315],[102.75913954, 25.05565764],[102.75825977, 25.0561922],[102.75705814, 25.05577427],[102.75584579, 25.05625051],[102.75377512, 25.05640602],[102.75344253, 25.05614360],
+        [102.75344789, 25.05561148],[102.75154620, 25.05593707],[102.75104463, 25.05753587],[102.75193244, 25.05766951],[102.7523616, 25.05759175],[102.75245279, 25.05790276],[102.75311798, 25.05854179],
+        [102.75336206, 25.05830367],[102.75384754, 25.05843488],[102.75426328, 25.05829638],[102.75474340, 25.05829881],[102.75579482, 25.05834012],[102.7574122, 25.05819919],[102.75672019, 25.05889896],
+        [102.75641441, 25.05969591],[102.75515914, 25.06114888],[102.75493383, 25.06173201],[102.75500894, 25.06259697],[102.75566339, 25.06329671],[102.75690794, 25.06381180],[102.75955796, 25.06239288],
+        [102.75964379, 25.06287881],[102.76074886, 25.06316065],[102.76180029, 25.06419082]
+    ];
+    var polygon = new AMap.Polygon({
+        map: map,
+        fillOpacity:0.4,
+        path: path
+    });
+
+  </script>
+
+
+
+
+   
+    
+</body>
+</html>
